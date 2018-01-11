@@ -1,0 +1,9 @@
+{
+    "id" : "LootPools",
+    "version" : "0.1.0-SNAPSHOT",
+    "author" : "Adrijaned",
+    "displayName" : "LootPools",
+    "description" : "This module does not add any functionality to game at its own. It enables developers to spawn random loot.",
+    "dependencies" : [],
+    "serverSideOnly" : false
+}
