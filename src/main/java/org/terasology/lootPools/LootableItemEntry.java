@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.lootPools.components;
+package org.terasology.lootPools;
 
-import org.terasology.entitySystem.Component;
-import org.terasology.reflection.MappedContainer;
+import org.terasology.entitySystem.prefab.Prefab;
 
-import java.util.List;
-
-public class LootableComponent implements Component {
-    public List<LootEntry> lootEntries;
-
-
-    @MappedContainer
-    public static class LootEntry {
-        /**
-         * The higher the regularity, the more often marked entity will appear
-         */
-        public long regularity = 100;
-        public long quantity = 1;
-        public String group = "general";
+public class LootableItemEntry {
+    public long regularity;
+    public Prefab prefab;
+    public long quantity;
+    LootableItemEntry(long regularity, Prefab prefab, long quantity){
+        this.regularity = regularity;
+        this.prefab = prefab;
+        this.quantity = quantity;
     }
-
 }
-
-
-
