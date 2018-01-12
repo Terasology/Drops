@@ -16,7 +16,6 @@
 package org.terasology.lootPools;
 
 import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -42,8 +41,9 @@ public class LootPool extends BaseComponentSystem {
 
     @In EntityManager entityManager;
 
-    private Map<String, List<LootableItemEntry>> lootables = new HashMap<>();
-    private long randomTreshold = 0;
+    private Map<String, List<LootableItem>> lootables = new HashMap<>();
+    // sum of all frequencies of given group
+    private Map<String, Long> randomTreshold = new HashMap<>();
     private Random random = new FastRandom();
     @Override
     public void preBegin() {
@@ -53,31 +53,44 @@ public class LootPool extends BaseComponentSystem {
             for (LootableComponent.LootEntry entry : component.lootEntries) {
                 if (!lootables.containsKey(entry.group)){
                     lootables.put(entry.group, new ArrayList<>());
+                    randomTreshold.put(entry.group, 0L);
                 }
-                lootables.get(entry.group).add(new LootableItemEntry(entry.regularity, prefab, entry.quantity));
-                randomTreshold += entry.regularity;
+                lootables.get(entry.group).add(new LootableItem(entry.frequency, prefab, entry.minAmount, entry.maxAmount));
+                randomTreshold.put(entry.group, randomTreshold.get(entry.group) + entry.frequency);
             }
         }
     }
 
+    /**
+     * Sets seed for RNG to use.
+     *
+     * If you are going for really deterministic results, please use this method before every group of calls
+     * to getRandomLoot(), with param being seed modified by some variable, like block position.
+     * Otherwise, if there would be unexpected call to getRandomLoot() in meantime, RNG would be in
+     * somehow modified state and you would receive different items. Returns itself
+     *
+     * @param seed The value to seed RNG with
+     * @return This, for method chaining ({@code lootPool.setSeed(seed).getRandomLoot();})
+     */
     public LootPool setSeed(long seed){
         this.random = new FastRandom(seed);
         return this;
     }
 
-    List<EntityRef> getRandomLoot(@Nonnull String group, int amount){
-        List<EntityRef> list = new ArrayList<>(amount);
-        for (int i = 0; i < amount; i++){
-            long item = random.nextLong() % randomTreshold;
-            for (LootableItemEntry entry : lootables.get(group)){
-                item -= entry.regularity;
-                if (item <= 0) {
-                    for (int j = 0; j < entry.quantity; j++){
-                        list.add(entityManager.create(entry.prefab));
-                    }
-                }
+    LootableItem getRandomLoot(@Nonnull String group){
+        // When requesting group for which no items have been defined, return something from the default group
+        if (!lootables.containsKey(group)) {
+            group = "general";
+        }
+        long randomNumber = Math.abs(random.nextLong()) % randomTreshold.get(group);
+        for (LootableItem item : lootables.get(group)){
+            if (randomNumber <= 0) {
+                return item;
+            } else {
+                randomNumber -= item.frequency;
             }
         }
-        return list;
+        // return the last item - wouldn't be handled in the for loop
+        return lootables.get(group).get(lootables.get(group).size() - 1);
     }
 }

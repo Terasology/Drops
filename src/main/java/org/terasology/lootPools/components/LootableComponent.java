@@ -29,8 +29,9 @@ public class LootableComponent implements Component {
         /**
          * The higher the regularity, the more often marked entity will appear
          */
-        public long regularity = 100;
-        public long quantity = 1;
+        public int frequency = 100;
+        public int minAmount = 1;
+        public int maxAmount = 1;
         public String group = "general";
     }
 
