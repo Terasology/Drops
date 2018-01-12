@@ -15,7 +15,10 @@
  */
 package org.terasology.lootPools;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityManager;
+import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -30,6 +33,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +43,8 @@ public class LootPool extends BaseComponentSystem {
     @In
     private PrefabManager prefabManager;
 
-    @In EntityManager entityManager;
+    @In
+    EntityManager entityManager;
 
     private Map<String, List<LootableItem>> lootables = new HashMap<>();
     // sum of all frequencies of given group
@@ -77,6 +82,11 @@ public class LootPool extends BaseComponentSystem {
         return this;
     }
 
+    /**
+     *
+     * @param group
+     * @return
+     */
     LootableItem getRandomLoot(@Nonnull String group){
         // When requesting group for which no items have been defined, return something from the default group
         if (!lootables.containsKey(group)) {
@@ -84,7 +94,7 @@ public class LootPool extends BaseComponentSystem {
         }
         long randomNumber = Math.abs(random.nextLong()) % randomTreshold.get(group);
         for (LootableItem item : lootables.get(group)){
-            if (randomNumber <= 0) {
+            if (randomNumber < item.frequency) {
                 return item;
             } else {
                 randomNumber -= item.frequency;
@@ -92,5 +102,18 @@ public class LootPool extends BaseComponentSystem {
         }
         // return the last item - wouldn't be handled in the for loop
         return lootables.get(group).get(lootables.get(group).size() - 1);
+    }
+
+    LootableItem getRandomLoot(){
+        return getRandomLoot("general");
+    }
+
+    List<EntityRef> toEntityList(LootableItem item){
+        List<EntityRef> list = new ArrayList<>(item.maxAmount);
+        int amount = random.nextInt(item.minAmount, item.maxAmount);
+        for (int i = 0; i < amount; i++){
+            list.add(entityManager.create(item.prefab));
+        }
+        return list;
     }
 }
