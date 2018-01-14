@@ -1,0 +1,13 @@
+{
+  "Lootable": {
+    "lootEntries": [
+      {
+        "item": "Core:Door"
+      },
+      {
+        "item": "Core:Shovel",
+        "frequency": 50
+      }
+    ]
+  }
+}

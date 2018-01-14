@@ -16,25 +16,13 @@
 package org.terasology.lootPools.components;
 
 import org.terasology.entitySystem.Component;
+import org.terasology.lootPools.LootableItem;
 import org.terasology.reflection.MappedContainer;
 
 import java.util.List;
 
 public class LootableComponent implements Component {
-    public List<LootEntry> lootEntries;
-
-
-    @MappedContainer
-    public static class LootEntry {
-        /**
-         * The higher the regularity, the more often marked entity will appear
-         */
-        public int frequency = 100;
-        public int minAmount = 1;
-        public int maxAmount = 1;
-        public String group = "general";
-    }
-
+    public List<LootableItem> lootEntries;
 }
 
 

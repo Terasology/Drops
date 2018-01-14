@@ -16,37 +16,43 @@
 package org.terasology.lootPools;
 
 import org.terasology.entitySystem.prefab.Prefab;
+import org.terasology.reflection.MappedContainer;
 
+@MappedContainer
 public class LootableItem {
     
     /**
      * How often item appears.
      */
-    public int frequency;
+    public int frequency = 100;
 
     /**
      * Prefab pointing at the randomly generated loot item.
      */
-    public Prefab prefab;
+    public Prefab prefab = null;
 
     /**
      * When item should not be received in quantities that are greater than 1, this controls that amount.
      * <p>
      * Usable for instance when dealing with decorative blocks, which would be kinda useless when received just one.
      */
-    public int minAmount;
+    public int minAmount = 1;
 
     /**
      * When item should not be received in quantities that are greater than 1, this controls that amount.
      * <p>
      * Usable for instance when dealing with decorative blocks, which would be kinda useless when received just one.
      */
-    public int maxAmount;
+    public int maxAmount = 1;
 
-    LootableItem(int frequency, Prefab prefab, int minAmount, int maxAmount) {
-        this.frequency = frequency;
-        this.prefab = prefab;
-        this.minAmount = minAmount;
-        this.maxAmount = maxAmount;
-    }
+    /**
+     * Group this item belongs to. May be something like "weapons", "armor" as well as "iron", "wooden"
+     */
+    public String group = "general";
+
+    /**
+     * Item to apply this Loot settings to. "this" means it will be applied to item in whose prefab specified.
+     * Other items may be specified in format "module:item"
+     */
+    public String item = "this";
 }
