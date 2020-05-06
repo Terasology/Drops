@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.drops;
+package org.terasology.drops.grammar;
 
 import com.google.common.collect.Maps;
 import org.terasology.entitySystem.Component;
