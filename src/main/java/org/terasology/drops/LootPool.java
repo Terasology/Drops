@@ -21,6 +21,7 @@ import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.naming.Name;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
 import org.terasology.utilities.random.FastRandom;
@@ -42,9 +43,9 @@ public class LootPool extends BaseComponentSystem {
     @In
     private EntityManager entityManager;
 
-    private Map<String, List<LootableItem>> lootables = new HashMap<>();
+    private Map<Name, List<LootableItem>> lootables = new HashMap<>();
     // sum of all frequencies of given group
-    private Map<String, Long> randomThreshold = new HashMap<>();
+    private Map<Name, Long> randomThreshold = new HashMap<>();
     private Random random = new FastRandom();
     @Override
     public void preBegin() {
@@ -56,7 +57,7 @@ public class LootPool extends BaseComponentSystem {
                     lootables.put(entry.group, new ArrayList<>());
                     randomThreshold.put(entry.group, 0L);
                 }
-                entry.prefab = entry.item.equals("this") ? prefab : prefabManager.getPrefab(entry.item);
+                entry.prefab = entry.item.equals("this") ? prefab : prefabManager.getPrefab(entry.item.toLowerCase());
                 lootables.get(entry.group).add(entry);
                 randomThreshold.put(entry.group, randomThreshold.get(entry.group) + entry.frequency);
             }
