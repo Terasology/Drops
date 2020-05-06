@@ -66,7 +66,7 @@ class DropParser {
         boolean dropping = true;
         int pipeIndex = resultDrop.indexOf('|');
         if (pipeIndex > -1) {
-            float chance = Float.parseFloat(resultDrop.substring(0, pipeIndex));
+            float chance = Float.parseFloat(resultDrop.substring(0, pipeIndex).trim());
             if (rnd.nextFloat() >= chance) {
                 dropping = false;
             }
@@ -82,16 +82,16 @@ class DropParser {
         int countMax = 1;
 
         if (timesIndex > -1) {
-            String timesStr = resultDrop.substring(0, timesIndex);
+            String timesStr = resultDrop.substring(0, timesIndex).trim();
             int minusIndex = timesStr.indexOf('-');
             if (minusIndex > -1) {
-                countMin = Integer.parseInt(timesStr.substring(0, minusIndex));
-                countMax = Integer.parseInt(timesStr.substring(minusIndex + 1));
+                countMin = Integer.parseInt(timesStr.substring(0, minusIndex).trim());
+                countMax = Integer.parseInt(timesStr.substring(minusIndex + 1).trim());
             } else {
-                countMin = Integer.parseInt(timesStr);
+                countMin = Integer.parseInt(timesStr.trim());
                 countMax = countMin;
             }
-            resultDrop = resultDrop.substring(timesIndex + 1);
+            resultDrop = resultDrop.substring(timesIndex + 1).trim();
         }
 
         int count = rnd.nextInt(countMin, countMax);
