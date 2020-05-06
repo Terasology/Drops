@@ -43,7 +43,7 @@ import java.util.List;
  *
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class BlockDropGrammarSystem extends BaseComponentSystem {
+public class DropGrammarSystem extends BaseComponentSystem {
     @In
     private EntityManager entityManager;
     @In
@@ -58,13 +58,13 @@ public class BlockDropGrammarSystem extends BaseComponentSystem {
         random = new FastRandom();
     }
 
-    @ReceiveEvent(components = {BlockDropGrammarComponent.class})
+    @ReceiveEvent(components = {DropGrammarComponent.class})
     public void whenBlockDropped(CreateBlockDropsEvent event, EntityRef blockEntity) {
         event.consume();
     }
 
     @ReceiveEvent
-    public void onDestroyed(DoDestroyEvent event, EntityRef entity, BlockDropGrammarComponent blockDrop, LocationComponent locationComp) {
+    public void onDestroyed(DoDestroyEvent event, EntityRef entity, DropGrammarComponent blockDrop, LocationComponent locationComp) {
         BlockDamageModifierComponent blockDamageModifierComponent = event.getDamageType().getComponent(BlockDamageModifierComponent.class);
         float chanceOfBlockDrop = 1;
 
@@ -79,7 +79,7 @@ public class BlockDropGrammarSystem extends BaseComponentSystem {
             if (blockDamageModifierComponent != null && blockDrop.droppedWithTool != null) {
                 for (String toolType : blockDamageModifierComponent.materialDamageMultiplier.keySet()) {
                     if (blockDrop.droppedWithTool.containsKey(toolType)) {
-                        BlockDropGrammarComponent.DropDefinition dropDefinition = blockDrop.droppedWithTool.get(toolType);
+                        DropGrammarComponent.DropDefinition dropDefinition = blockDrop.droppedWithTool.get(toolType);
                         blockDrops = dropDefinition.blockDrops;
                         itemDrops = dropDefinition.itemDrops;
                         break;

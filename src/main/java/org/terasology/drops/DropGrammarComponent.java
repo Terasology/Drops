@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  */
-public final class BlockDropGrammarComponent implements Component {
+public final class DropGrammarComponent implements Component {
     public List<String> blockDrops;
     public List<String> itemDrops;
 
