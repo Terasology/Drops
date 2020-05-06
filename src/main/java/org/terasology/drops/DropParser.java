@@ -18,7 +18,13 @@ package org.terasology.drops;
 import org.terasology.utilities.random.Random;
 
 /**
- * Parser to
+ * <pre>
+ *    DROP_DEFINITION   := [CHANCE '|'] [COUNT '*'] DROP
+ *    CHANCE            := FLOAT in [0..1]
+ *    COUNT             := INT | RANGE
+ *    RANGE             := INT '-' INT
+ *    DROP              := STRING
+ * </pre>
  *
  * Multiply a drop definition by a fixed <i>factor</i>:
  * <pre>
@@ -33,42 +39,14 @@ import org.terasology.utilities.random.Random;
  */
 class DropParser {
     final private Random rnd;
-    final private String drop;
-    private int count;
-    private String resultDrop;
 
     /**
      * Instantiate a parser for the given drop string with the specified RNG.
      *
      * @param rnd the random number generator used to determine a drop count for a range
-     * @param drop the full drop string to be parsed
      */
-    DropParser(final Random rnd, final String drop) {
+    DropParser(final Random rnd) {
         this.rnd = rnd;
-        this.drop = drop;
-    }
-
-    /**
-     * The identifier of the drop parsed from string given at initialization.
-     *
-     * Note that the string is not checked to be a valid block or item identifier.
-     *
-     * @return the identifier of the drop, or null if the parser has not been invoked
-     */
-    public String getDrop() {
-        return resultDrop;
-    }
-
-    /**
-     * A (possibly random) count for the object to drop.
-     *
-     * If the drop is specified within a range the value of count may change with subsequent invocations of the
-     * parser.
-     *
-     * @return the drop count - may be zero if the parser has not been invoked
-     */
-    public int getCount() {
-        return count;
     }
 
     /**
@@ -76,10 +54,12 @@ class DropParser {
      *
      * Subsequent invocations may change the count, but will never change the drop.
      *
+     * @param drop the full drop string to be parsed
+     *
      * @return this parser with updated values for drop and drop count.
      */
-    public DropParser invoke() {
-        resultDrop = drop;
+    public ParseResult invoke(final String drop) {
+        String resultDrop = drop;
         int timesIndex = resultDrop.indexOf('*');
         int countMin = 1;
         int countMax = 1;
@@ -97,7 +77,7 @@ class DropParser {
             resultDrop = resultDrop.substring(timesIndex + 1);
         }
 
-        count = rnd.nextInt(countMin, countMax);
-        return this;
+        int count = rnd.nextInt(countMin, countMax);
+        return new ParseResult(resultDrop, count);
     }
 }

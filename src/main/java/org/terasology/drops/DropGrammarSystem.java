@@ -15,6 +15,7 @@
  */
 package org.terasology.drops;
 
+import com.google.common.collect.Lists;
 import org.terasology.entitySystem.entity.EntityBuilder;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -38,9 +39,13 @@ import org.terasology.world.block.entity.damage.BlockDamageModifierComponent;
 import org.terasology.world.block.items.BlockItemFactory;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
+ * Drops objects specified by a {@link DropGrammarComponent} when an entity with that component is destroyed.
  *
+ * @see DoDestroyEvent
+ * @see DropGrammarComponent
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class DropGrammarSystem extends BaseComponentSystem {
@@ -51,11 +56,13 @@ public class DropGrammarSystem extends BaseComponentSystem {
 
     private BlockItemFactory blockItemFactory;
     private Random random;
+    private DropParser parser;
 
     @Override
     public void initialise() {
         blockItemFactory = new BlockItemFactory(entityManager);
         random = new FastRandom();
+        parser = new DropParser(random);
     }
 
     @ReceiveEvent(components = {DropGrammarComponent.class})
@@ -100,8 +107,8 @@ public class DropGrammarSystem extends BaseComponentSystem {
                         dropResult = dropResult.substring(pipeIndex + 1);
                     }
                     if (dropping) {
-                        DropParser dropParser = new DropParser(random, dropResult).invoke();
-                        EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(dropParser.getDrop()), dropParser.getCount());
+                        ParseResult dropParseResult = parser.invoke(dropResult);
+                        EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(dropParseResult.getDrop()), dropParseResult.getCount());
                         if (shouldDropToWorld(event, blockDamageModifierComponent, dropItem)) {
                             createDrop(dropItem, locationComp.getWorldPosition(), true);
                         }
@@ -122,11 +129,11 @@ public class DropGrammarSystem extends BaseComponentSystem {
                         dropResult = dropResult.substring(pipeIndex + 1);
                     }
                     if (dropping) {
-                        DropParser dropParser = new DropParser(random, dropResult).invoke();
-                        EntityBuilder dropEntity = entityManager.newBuilder(dropParser.getDrop());
-                        if (dropParser.getCount() > 1) {
+                        ParseResult dropParseResult = parser.invoke(dropResult);
+                        EntityBuilder dropEntity = entityManager.newBuilder(dropParseResult.getDrop());
+                        if (dropParseResult.getCount() > 1) {
                             ItemComponent itemComponent = dropEntity.getComponent(ItemComponent.class);
-                            itemComponent.stackCount = (byte) dropParser.getCount();
+                            itemComponent.stackCount = (byte) dropParseResult.getCount();
                         }
                         EntityRef dropItem = dropEntity.build();
                         if (shouldDropToWorld(event, blockDamageModifierComponent, dropItem)) {
@@ -156,4 +163,34 @@ public class DropGrammarSystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * @param drops
+     * @return
+     */
+    private List<DropItemEvent> foo(final List<String> drops,
+                                    final Function<EntityRef, Boolean> shouldDrop,
+                                    final Vector3f position) {
+        for (String drop : drops) {
+            String dropResult = drop;
+            boolean dropping = true;
+
+            int pipeIndex = drop.indexOf('|');
+            if (pipeIndex > -1) {
+                float chance = Float.parseFloat(dropResult.substring(0, pipeIndex));
+                if (random.nextFloat() >= chance) {
+                    dropping = false;
+                }
+                dropResult = dropResult.substring(pipeIndex + 1);
+            }
+
+            if (dropping) {
+                ParseResult parseResult = parser.invoke(dropResult);
+                EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(parseResult.getDrop()), parseResult.getCount());
+                if (shouldDrop.apply(dropItem)) {
+                    createDrop(dropItem, position, true);
+                }
+            }
+        }
+        return Lists.newArrayList();
+    }
 }
