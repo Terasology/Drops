@@ -44,8 +44,13 @@ import java.util.function.Function;
 /**
  * Drops objects specified by a {@link DropGrammarComponent} when an entity with that component is destroyed.
  *
+ * A {@link DropParser} is used to determine the (possibly) random drop.
+ * Each drop definition is evaluated separately without affecting other definitions. Each drop chance is for a single
+ * drop definition.
+ *
  * @see DoDestroyEvent
  * @see DropGrammarComponent
+ * @see DropParser
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class DropGrammarSystem extends BaseComponentSystem {
@@ -139,25 +144,5 @@ public class DropGrammarSystem extends BaseComponentSystem {
         if (applyMovement) {
             item.send(new ImpulseEvent(random.nextVector3f(30.0f)));
         }
-    }
-
-    /**
-     * @param drops
-     * @return
-     */
-    private List<DropItemEvent> foo(final List<String> drops,
-                                    final Function<EntityRef, Boolean> shouldDrop,
-                                    final Vector3f position) {
-        for (String drop : drops) {
-            String dropResult = drop;
-
-            parser.invoke(dropResult).ifPresent(parseResult -> {
-                EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(parseResult.getDrop()), parseResult.getCount());
-                if (shouldDrop.apply(dropItem)) {
-                    createDrop(dropItem, position, true);
-                }
-            });
-        }
-        return Lists.newArrayList();
     }
 }
