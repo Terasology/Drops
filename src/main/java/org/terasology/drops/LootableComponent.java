@@ -13,26 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.lootPools;
+package org.terasology.drops;
 
-import com.google.common.collect.Maps;
 import org.terasology.entitySystem.Component;
-import org.terasology.reflection.MappedContainer;
 
 import java.util.List;
-import java.util.Map;
 
-/**
- */
-public final class BlockDropGrammarComponent implements Component {
-    public List<String> blockDrops;
-    public List<String> itemDrops;
-
-    public Map<String, DropDefinition> droppedWithTool = Maps.newLinkedHashMap();
-
-    @MappedContainer
-    public static class DropDefinition {
-        public List<String> blockDrops;
-        public List<String> itemDrops;
-    }
+public class LootableComponent implements Component {
+    public List<LootableItem> lootEntries;
 }
+
+
+

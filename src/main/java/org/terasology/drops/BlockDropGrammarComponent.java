@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MovingBlocks
+ * Copyright 2020 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.lootPools.components;
+package org.terasology.drops;
 
+import com.google.common.collect.Maps;
 import org.terasology.entitySystem.Component;
-import org.terasology.lootPools.LootableItem;
 import org.terasology.reflection.MappedContainer;
 
 import java.util.List;
+import java.util.Map;
 
-public class LootableComponent implements Component {
-    public List<LootableItem> lootEntries;
+/**
+ */
+public final class BlockDropGrammarComponent implements Component {
+    public List<String> blockDrops;
+    public List<String> itemDrops;
+
+    public Map<String, DropDefinition> droppedWithTool = Maps.newLinkedHashMap();
+
+    @MappedContainer
+    public static class DropDefinition {
+        public List<String> blockDrops;
+        public List<String> itemDrops;
+    }
 }
-
-
-

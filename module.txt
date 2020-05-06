@@ -1,9 +1,10 @@
 {
-    "id" : "LootPools",
-    "version" : "0.1.0-SNAPSHOT",
-    "author" : "Adrijaned",
-    "displayName" : "LootPools",
-    "description" : "This module does not add any functionality to game at its own. It enables developers to spawn random loot.",
+    "id" : "Drops",
+    "version" : "1.0.0",
+    "author" : "The Terasology Foundation",
+    "displayName" : "Drops",
+    "description" : "This library module provides means to drop loot.",
     "dependencies" : [],
-    "serverSideOnly" : false
+    "serverSideOnly" : false,
+    "isLibrary": true
 }

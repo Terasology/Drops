@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.lootPools;
+package org.terasology.drops;
 
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.reflection.MappedContainer;
