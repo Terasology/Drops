@@ -96,40 +96,18 @@ public class DropGrammarSystem extends BaseComponentSystem {
 
             if (blockDrops != null) {
                 for (String drop : blockDrops) {
-                    String dropResult = drop;
-                    boolean dropping = true;
-                    int pipeIndex = dropResult.indexOf('|');
-                    if (pipeIndex > -1) {
-                        float chance = Float.parseFloat(dropResult.substring(0, pipeIndex));
-                        if (random.nextFloat() >= chance) {
-                            dropping = false;
-                        }
-                        dropResult = dropResult.substring(pipeIndex + 1);
-                    }
-                    if (dropping) {
-                        ParseResult dropParseResult = parser.invoke(dropResult);
+                    parser.invoke(drop).ifPresent(dropParseResult -> {
                         EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(dropParseResult.getDrop()), dropParseResult.getCount());
                         if (shouldDropToWorld(event, blockDamageModifierComponent, dropItem)) {
                             createDrop(dropItem, locationComp.getWorldPosition(), true);
                         }
-                    }
+                    });
                 }
             }
 
             if (itemDrops != null) {
                 for (String drop : itemDrops) {
-                    String dropResult = drop;
-                    boolean dropping = true;
-                    int pipeIndex = dropResult.indexOf('|');
-                    if (pipeIndex > -1) {
-                        float chance = Float.parseFloat(dropResult.substring(0, pipeIndex));
-                        if (random.nextFloat() >= chance) {
-                            dropping = false;
-                        }
-                        dropResult = dropResult.substring(pipeIndex + 1);
-                    }
-                    if (dropping) {
-                        ParseResult dropParseResult = parser.invoke(dropResult);
+                    parser.invoke(drop).ifPresent(dropParseResult -> {
                         EntityBuilder dropEntity = entityManager.newBuilder(dropParseResult.getDrop());
                         if (dropParseResult.getCount() > 1) {
                             ItemComponent itemComponent = dropEntity.getComponent(ItemComponent.class);
@@ -139,7 +117,7 @@ public class DropGrammarSystem extends BaseComponentSystem {
                         if (shouldDropToWorld(event, blockDamageModifierComponent, dropItem)) {
                             createDrop(dropItem, locationComp.getWorldPosition(), false);
                         }
-                    }
+                    });
                 }
             }
         }
@@ -172,24 +150,13 @@ public class DropGrammarSystem extends BaseComponentSystem {
                                     final Vector3f position) {
         for (String drop : drops) {
             String dropResult = drop;
-            boolean dropping = true;
 
-            int pipeIndex = drop.indexOf('|');
-            if (pipeIndex > -1) {
-                float chance = Float.parseFloat(dropResult.substring(0, pipeIndex));
-                if (random.nextFloat() >= chance) {
-                    dropping = false;
-                }
-                dropResult = dropResult.substring(pipeIndex + 1);
-            }
-
-            if (dropping) {
-                ParseResult parseResult = parser.invoke(dropResult);
+            parser.invoke(dropResult).ifPresent(parseResult -> {
                 EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(parseResult.getDrop()), parseResult.getCount());
                 if (shouldDrop.apply(dropItem)) {
                     createDrop(dropItem, position, true);
                 }
-            }
+            });
         }
         return Lists.newArrayList();
     }

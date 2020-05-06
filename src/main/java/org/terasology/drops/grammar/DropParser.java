@@ -17,6 +17,8 @@ package org.terasology.drops.grammar;
 
 import org.terasology.utilities.random.Random;
 
+import java.util.Optional;
+
 /**
  * <pre>
  *    DROP_DEFINITION   := [CHANCE '|'] [COUNT '*'] DROP
@@ -58,8 +60,23 @@ class DropParser {
      *
      * @return this parser with updated values for drop and drop count.
      */
-    public ParseResult invoke(final String drop) {
+    public Optional<ParseResult> invoke(final String drop) {
         String resultDrop = drop;
+
+        boolean dropping = true;
+        int pipeIndex = resultDrop.indexOf('|');
+        if (pipeIndex > -1) {
+            float chance = Float.parseFloat(resultDrop.substring(0, pipeIndex));
+            if (rnd.nextFloat() >= chance) {
+                dropping = false;
+            }
+            resultDrop = resultDrop.substring(pipeIndex + 1);
+        }
+
+        if (!dropping) {
+            return Optional.empty();
+        }
+
         int timesIndex = resultDrop.indexOf('*');
         int countMin = 1;
         int countMax = 1;
@@ -78,6 +95,6 @@ class DropParser {
         }
 
         int count = rnd.nextInt(countMin, countMax);
-        return new ParseResult(resultDrop, count);
+        return Optional.of(new ParseResult(resultDrop, count));
     }
 }
