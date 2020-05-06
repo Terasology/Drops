@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MovingBlocks
+ * Copyright 2020 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.drops;
+package org.terasology.drops.loot;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -34,7 +34,7 @@ public class LootPoolCLI extends BaseComponentSystem {
     private Console console;
 
     @In
-    private LootPool lootPool;
+    private LootSystem lootSystem;
 
     /**
      * Quick and dirty solution - fails if core is not set-up
@@ -53,10 +53,10 @@ public class LootPoolCLI extends BaseComponentSystem {
         Random random = new FastRandom();
         LootableItem randomLoot;
         if (group != null){
-            randomLoot = lootPool.getRandomLoot(group);
+            randomLoot = lootSystem.getRandomLoot(group);
         }
         else {
-            randomLoot = lootPool.getRandomLoot();
+            randomLoot = lootSystem.getRandomLoot();
         }
         int amount = random.nextInt(randomLoot.minAmount, randomLoot.maxAmount);
         String name = randomLoot.prefab.getName();
