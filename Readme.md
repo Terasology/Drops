@@ -9,6 +9,21 @@
  RANGE             := INT '-' INT
  DROP              := STRING
 ```
+
+```json5
+{
+    "DropGrammar": {
+        "blockDrops": [
+            "0.5|2-7*CoreBlocks:Dirt",
+            "0.1|20*CoreBlocks:Stone"
+        ],
+        "itemDrops": [
+            "1-2*CoreBlocks:Door",
+            "CoreItems:Pickaxe"
+        ]
+    }
+}
+```
  
 ## Commands 
   
