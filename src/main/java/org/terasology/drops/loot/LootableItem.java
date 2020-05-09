@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MovingBlocks
+ * Copyright 2020 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.lootPools;
+package org.terasology.drops.loot;
 
 import org.terasology.entitySystem.prefab.Prefab;
+import org.terasology.naming.Name;
 import org.terasology.reflection.MappedContainer;
 
 @MappedContainer
@@ -48,11 +49,11 @@ public class LootableItem {
     /**
      * Group this item belongs to. May be something like "weapons", "armor" as well as "iron", "wooden"
      */
-    public String group = "general";
+    public Name group = new Name("general");
 
     /**
      * Item to apply this Loot settings to. "this" means it will be applied to item in whose prefab specified.
      * Other items may be specified in format "module:item"
      */
-    public String item = "this";
+    public Name item = new Name("this");
 }
