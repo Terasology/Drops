@@ -3,7 +3,7 @@
     "version" : "1.0.0",
     "author" : "The Terasology Foundation",
     "displayName" : "Drops",
-    "description" : "This library module provides means to drop loot.",
+    "description" : "This library module provides means to drop objects (items or blocks) on destruction, create loot groups and get random loot for a specified loot group on request.",
     "dependencies" : [],
     "serverSideOnly" : false,
     "isLibrary": true
