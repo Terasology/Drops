@@ -21,7 +21,7 @@ import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.naming.Name;
+import org.terasology.gestalt.naming.Name;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
 import org.terasology.utilities.random.FastRandom;
