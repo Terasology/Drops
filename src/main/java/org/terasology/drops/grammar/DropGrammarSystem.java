@@ -1,52 +1,36 @@
-/*
- * Copyright 2020 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.grammar;
 
-import com.google.common.collect.Lists;
-import org.terasology.entitySystem.entity.EntityBuilder;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.health.DoDestroyEvent;
-import org.terasology.logic.inventory.ItemComponent;
-import org.terasology.logic.inventory.events.DropItemEvent;
-import org.terasology.logic.inventory.events.GiveItemEvent;
-import org.terasology.logic.location.LocationComponent;
+import org.terasology.engine.entitySystem.entity.EntityBuilder;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterMode;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.destruction.DoDestroyEvent;
+import org.terasology.engine.logic.inventory.ItemComponent;
+import org.terasology.engine.logic.inventory.events.DropItemEvent;
+import org.terasology.engine.logic.inventory.events.GiveItemEvent;
+import org.terasology.engine.logic.location.LocationComponent;
+import org.terasology.engine.physics.events.ImpulseEvent;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.utilities.random.FastRandom;
+import org.terasology.engine.utilities.random.Random;
+import org.terasology.engine.world.block.BlockManager;
+import org.terasology.engine.world.block.entity.CreateBlockDropsEvent;
+import org.terasology.engine.world.block.entity.damage.BlockDamageModifierComponent;
+import org.terasology.engine.world.block.items.BlockItemFactory;
 import org.terasology.math.geom.Vector3f;
-import org.terasology.physics.events.ImpulseEvent;
-import org.terasology.registry.In;
-import org.terasology.utilities.random.FastRandom;
-import org.terasology.utilities.random.Random;
-import org.terasology.world.block.BlockManager;
-import org.terasology.world.block.entity.CreateBlockDropsEvent;
-import org.terasology.world.block.entity.damage.BlockDamageModifierComponent;
-import org.terasology.world.block.items.BlockItemFactory;
 
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Drops objects specified by a {@link DropGrammarComponent} when an entity with that component is destroyed.
- *
- * A {@link DropParser} is used to determine the (possibly) random drop.
- * Each drop definition is evaluated separately without affecting other definitions. Each drop chance is for a single
- * drop definition.
+ * <p>
+ * A {@link DropParser} is used to determine the (possibly) random drop. Each drop definition is evaluated separately
+ * without affecting other definitions. Each drop chance is for a single drop definition.
  *
  * @see DoDestroyEvent
  * @see DropGrammarComponent
@@ -76,8 +60,10 @@ public class DropGrammarSystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onDestroyed(DoDestroyEvent event, EntityRef entity, DropGrammarComponent blockDrop, LocationComponent locationComp) {
-        BlockDamageModifierComponent blockDamageModifierComponent = event.getDamageType().getComponent(BlockDamageModifierComponent.class);
+    public void onDestroyed(DoDestroyEvent event, EntityRef entity, DropGrammarComponent blockDrop,
+                            LocationComponent locationComp) {
+        BlockDamageModifierComponent blockDamageModifierComponent =
+                event.getDamageType().getComponent(BlockDamageModifierComponent.class);
         float chanceOfBlockDrop = 1;
 
         if (blockDamageModifierComponent != null) {
@@ -102,7 +88,9 @@ public class DropGrammarSystem extends BaseComponentSystem {
             if (blockDrops != null) {
                 for (String drop : blockDrops) {
                     parser.invoke(drop).ifPresent(dropParseResult -> {
-                        EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(dropParseResult.getDrop()), dropParseResult.getCount());
+                        EntityRef dropItem =
+                                blockItemFactory.newInstance(blockManager.getBlockFamily(dropParseResult.getDrop()),
+                                        dropParseResult.getCount());
                         if (shouldDropToWorld(event, blockDamageModifierComponent, dropItem)) {
                             createDrop(dropItem, locationComp.getWorldPosition(), true);
                         }
@@ -128,7 +116,8 @@ public class DropGrammarSystem extends BaseComponentSystem {
         }
     }
 
-    private boolean shouldDropToWorld(DoDestroyEvent event, BlockDamageModifierComponent blockDamageModifierComponent, EntityRef dropItem) {
+    private boolean shouldDropToWorld(DoDestroyEvent event, BlockDamageModifierComponent blockDamageModifierComponent
+            , EntityRef dropItem) {
         return blockDamageModifierComponent == null || !blockDamageModifierComponent.directPickup
                 || !giveItem(event.getInstigator(), dropItem);
     }
