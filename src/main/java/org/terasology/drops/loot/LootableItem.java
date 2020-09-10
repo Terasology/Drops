@@ -4,7 +4,7 @@ package org.terasology.drops.loot;
 
 import org.terasology.engine.entitySystem.prefab.Prefab;
 import org.terasology.gestalt.naming.Name;
-import org.terasology.reflection.MappedContainer;
+import org.terasology.nui.reflection.MappedContainer;
 
 @MappedContainer
 public class LootableItem {
