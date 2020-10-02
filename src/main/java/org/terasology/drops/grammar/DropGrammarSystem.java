@@ -142,7 +142,7 @@ public class DropGrammarSystem extends BaseComponentSystem {
     private void createDrop(EntityRef item, Vector3f location, boolean applyMovement) {
         item.send(new DropItemEvent(location));
         if (applyMovement) {
-            item.send(new ImpulseEvent(random.nextVector3f(30.0f)));
+            item.send(new ImpulseEvent(random.nextVector3f(30.0f, new org.joml.Vector3f())));
         }
     }
 }
