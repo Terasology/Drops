@@ -40,7 +40,7 @@ import java.util.Optional;
  *
  */
 class DropParser {
-    final private Random rnd;
+    private final Random rnd;
 
     /**
      * Instantiate a parser for the given drop string with the specified RNG.
