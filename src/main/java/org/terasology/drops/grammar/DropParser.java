@@ -15,7 +15,7 @@
  */
 package org.terasology.drops.grammar;
 
-import org.terasology.utilities.random.Random;
+import org.terasology.engine.utilities.random.Random;
 
 import java.util.Optional;
 

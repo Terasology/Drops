@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.loot;
 
-import org.terasology.entitySystem.prefab.Prefab;
+import org.terasology.engine.entitySystem.prefab.Prefab;
 import org.terasology.naming.Name;
 import org.terasology.reflection.MappedContainer;
 

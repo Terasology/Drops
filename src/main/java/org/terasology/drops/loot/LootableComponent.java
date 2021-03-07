@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.loot;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 import java.util.List;
 
