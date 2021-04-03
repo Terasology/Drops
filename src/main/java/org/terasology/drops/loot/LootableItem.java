@@ -3,7 +3,7 @@
 package org.terasology.drops.loot;
 
 import org.terasology.engine.entitySystem.prefab.Prefab;
-import org.terasology.naming.Name;
+import org.terasology.gestalt.naming.Name;
 import org.terasology.reflection.MappedContainer;
 
 @MappedContainer
