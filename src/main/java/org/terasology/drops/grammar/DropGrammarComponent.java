@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.grammar;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.terasology.gestalt.entitysystem.component.Component;
 import org.terasology.reflection.MappedContainer;
@@ -19,9 +20,17 @@ public final class DropGrammarComponent implements Component<DropGrammarComponen
 
     @Override
     public void copy(DropGrammarComponent other) {
-        this.blockDrops = other.blockDrops;
-        this.itemDrops = other.blockDrops;
-        this.droppedWithTool = other.droppedWithTool;
+        this.blockDrops = Lists.newArrayList(other.blockDrops);
+        this.itemDrops = Lists.newArrayList(other.blockDrops);
+        this.droppedWithTool = Maps.newLinkedHashMap();
+        for (Map.Entry<String, DropDefinition> entry : other.droppedWithTool.entrySet()) {
+            String key = entry.getKey();
+            DropDefinition old = entry.getValue();
+            DropDefinition newDrop = new DropDefinition();
+            newDrop.blockDrops = Lists.newArrayList(old.blockDrops);
+            newDrop.itemDrops = Lists.newArrayList(old.itemDrops);
+            this.droppedWithTool.put(key, newDrop);
+        }
     }
 
     @MappedContainer
