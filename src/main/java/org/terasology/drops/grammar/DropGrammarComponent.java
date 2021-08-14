@@ -19,7 +19,7 @@ public final class DropGrammarComponent implements Component<DropGrammarComponen
     public Map<String, DropDefinition> droppedWithTool = Maps.newLinkedHashMap();
 
     @Override
-    public void copy(DropGrammarComponent other) {
+    public void copyFrom(DropGrammarComponent other) {
         this.blockDrops = Lists.newArrayList(other.blockDrops);
         this.itemDrops = Lists.newArrayList(other.blockDrops);
         this.droppedWithTool = Maps.newLinkedHashMap();

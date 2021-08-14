@@ -11,7 +11,7 @@ public class LootableComponent implements Component<LootableComponent> {
     public List<LootableItem> lootEntries;
 
     @Override
-    public void copy(LootableComponent other) {
+    public void copyFrom(LootableComponent other) {
         this.lootEntries = other.lootEntries.stream()
                 .map(lootableItem -> {
                     LootableItem newLootableItem = new LootableItem();
