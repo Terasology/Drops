@@ -19,7 +19,6 @@ import org.joml.Vector3f;
 import org.terasology.engine.entitySystem.entity.EntityBuilder;
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
@@ -36,6 +35,7 @@ import org.terasology.engine.world.block.BlockManager;
 import org.terasology.engine.world.block.entity.CreateBlockDropsEvent;
 import org.terasology.engine.world.block.entity.damage.BlockDamageModifierComponent;
 import org.terasology.engine.world.block.items.BlockItemFactory;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 
 import java.util.List;
 
