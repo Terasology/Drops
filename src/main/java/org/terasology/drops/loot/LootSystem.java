@@ -1,4 +1,4 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.loot;
 
@@ -46,7 +46,7 @@ public class LootSystem extends BaseComponentSystem {
                     lootables.put(entry.group, new ArrayList<>());
                     randomThreshold.put(entry.group, 0L);
                 }
-                entry.prefab = entry.item.equals("this") ? prefab : prefabManager.getPrefab(entry.item.toLowerCase());
+                entry.prefab = entry.item.equals(LootableItem.THIS_PREFAB) ? prefab : prefabManager.getPrefab(entry.item.toLowerCase());
                 lootables.get(entry.group).add(entry);
                 randomThreshold.put(entry.group, randomThreshold.get(entry.group) + entry.frequency);
             }
@@ -75,10 +75,11 @@ public class LootSystem extends BaseComponentSystem {
      * @param group Group of lootables to retrieve item from
      * @return Random {@code LootableItem}
      */
-    public LootableItem getRandomLoot(@Nonnull String group) {
+    @SuppressWarnings("checkstyle:ParameterAssignment")
+    public LootableItem getRandomLoot(@Nonnull Name group) {
         // When requesting group for which no items have been defined, return something from the default group
         if (!lootables.containsKey(group)) {
-            group = "general";
+            group = LootableItem.DEFAULT_GROUP;
         }
         long randomNumber = Math.abs(random.nextLong()) % randomThreshold.get(group);
         for (LootableItem item : lootables.get(group)) {
@@ -98,7 +99,7 @@ public class LootSystem extends BaseComponentSystem {
      * @return Random {@code LootableItem}
      */
     public LootableItem getRandomLoot() {
-        return getRandomLoot("general");
+        return getRandomLoot(LootableItem.DEFAULT_GROUP);
     }
 
     /**
