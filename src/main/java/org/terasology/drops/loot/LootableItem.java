@@ -1,4 +1,4 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.loot;
 
@@ -9,14 +9,13 @@ import org.terasology.reflection.MappedContainer;
 @MappedContainer
 public class LootableItem {
 
-    /**
-     * How often item appears.
-     */
+    public static final Name DEFAULT_GROUP = new Name("general");
+    public static final Name THIS_PREFAB = new Name("this");
+
+    /** How often item appears. */
     public int frequency = 100;
 
-    /**
-     * Prefab pointing at the randomly generated loot item.
-     */
+    /** Prefab pointing at the randomly generated loot item. */
     public Prefab prefab = null;
 
     /**
@@ -36,11 +35,11 @@ public class LootableItem {
     /**
      * Group this item belongs to. May be something like "weapons", "armor" as well as "iron", "wooden"
      */
-    public Name group = new Name("general");
+    public Name group = DEFAULT_GROUP;
 
     /**
      * Item to apply this Loot settings to. "this" means it will be applied to item in whose prefab specified.
      * Other items may be specified in format "module:item"
      */
-    public Name item = new Name("this");
+    public Name item = THIS_PREFAB;
 }
