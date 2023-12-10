@@ -1,18 +1,6 @@
-/*
- * Copyright 2020 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
+
 package org.terasology.drops.grammar;
 
 import org.joml.Vector3f;
@@ -41,7 +29,7 @@ import java.util.List;
 
 /**
  * Drops objects specified by a {@link DropGrammarComponent} when an entity with that component is destroyed.
- *
+ * <p>
  * A {@link DropParser} is used to determine the (possibly) random drop.
  * Each drop definition is evaluated separately without affecting other definitions. Each drop chance is for a single
  * drop definition.
@@ -68,7 +56,7 @@ public class DropGrammarSystem extends BaseComponentSystem {
         parser = new DropParser(random);
     }
 
-    @ReceiveEvent(components = {DropGrammarComponent.class})
+    @ReceiveEvent(components = DropGrammarComponent.class)
     public void whenBlockDropped(CreateBlockDropsEvent event, EntityRef blockEntity) {
         event.consume();
     }
@@ -100,7 +88,9 @@ public class DropGrammarSystem extends BaseComponentSystem {
             if (blockDrops != null) {
                 for (String drop : blockDrops) {
                     parser.invoke(drop).ifPresent(dropParseResult -> {
-                        EntityRef dropItem = blockItemFactory.newInstance(blockManager.getBlockFamily(dropParseResult.getDrop()), dropParseResult.getCount());
+                        EntityRef dropItem = blockItemFactory.newInstance(
+                                blockManager.getBlockFamily(dropParseResult.getDrop()), dropParseResult.getCount()
+                        );
                         if (shouldDropToWorld(event, blockDamageModifierComponent, dropItem)) {
                             createDrop(dropItem, locationComp.getWorldPosition(new Vector3f()), true);
                         }

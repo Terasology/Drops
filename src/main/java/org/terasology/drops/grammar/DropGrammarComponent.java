@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- */
 public final class DropGrammarComponent implements Component<DropGrammarComponent> {
     public List<String> blockDrops;
     public List<String> itemDrops;
