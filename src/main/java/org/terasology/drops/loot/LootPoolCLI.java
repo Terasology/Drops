@@ -1,4 +1,4 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.drops.loot;
 
@@ -13,6 +13,7 @@ import org.terasology.engine.logic.permission.PermissionManager;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.utilities.random.FastRandom;
 import org.terasology.engine.utilities.random.Random;
+import org.terasology.gestalt.naming.Name;
 
 @RegisterSystem
 public class LootPoolCLI extends BaseComponentSystem {
@@ -41,7 +42,7 @@ public class LootPoolCLI extends BaseComponentSystem {
         Random random = new FastRandom();
         LootableItem randomLoot;
         if (group != null) {
-            randomLoot = lootSystem.getRandomLoot(group);
+            randomLoot = lootSystem.getRandomLoot(new Name(group));
         } else {
             randomLoot = lootSystem.getRandomLoot();
         }

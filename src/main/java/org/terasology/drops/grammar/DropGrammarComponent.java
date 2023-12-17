@@ -9,9 +9,8 @@ import org.terasology.reflection.MappedContainer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-/**
- */
 public final class DropGrammarComponent implements Component<DropGrammarComponent> {
     public List<String> blockDrops;
     public List<String> itemDrops;
@@ -19,23 +18,24 @@ public final class DropGrammarComponent implements Component<DropGrammarComponen
     public Map<String, DropDefinition> droppedWithTool = Maps.newLinkedHashMap();
 
     @Override
-    public void copy(DropGrammarComponent other) {
+    public void copyFrom(DropGrammarComponent other) {
         this.blockDrops = Lists.newArrayList(other.blockDrops);
         this.itemDrops = Lists.newArrayList(other.blockDrops);
-        this.droppedWithTool = Maps.newLinkedHashMap();
-        for (Map.Entry<String, DropDefinition> entry : other.droppedWithTool.entrySet()) {
-            String key = entry.getKey();
-            DropDefinition old = entry.getValue();
-            DropDefinition newDrop = new DropDefinition();
-            newDrop.blockDrops = Lists.newArrayList(old.blockDrops);
-            newDrop.itemDrops = Lists.newArrayList(old.itemDrops);
-            this.droppedWithTool.put(key, newDrop);
-        }
+        this.droppedWithTool = other.droppedWithTool.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().copy()));
     }
 
     @MappedContainer
     public static class DropDefinition {
         public List<String> blockDrops;
         public List<String> itemDrops;
+
+        /** Create a deep copy of this drop definition. */
+        DropDefinition copy() {
+            DropDefinition copy = new DropDefinition();
+            copy.blockDrops = Lists.newArrayList(this.blockDrops);
+            copy.itemDrops = Lists.newArrayList(this.itemDrops);
+            return copy;
+        }
     }
 }
